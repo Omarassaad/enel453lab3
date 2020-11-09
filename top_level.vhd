@@ -7,7 +7,7 @@ use ieee.numeric_std.all;
 entity top_level is
     Port ( clk                           : in  STD_LOGIC;
            reset_n                       : in  STD_LOGIC;
-			  save_button						  : in  STD_LOGIC;
+			  freeze_button						  : in  STD_LOGIC;
 			  SW                            : in  STD_LOGIC_VECTOR (9 downto 0);
            LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
@@ -23,9 +23,9 @@ Signal switch_inputs: STD_LOGIC_VECTOR (12 downto 0);
 Signal bcd:           STD_LOGIC_VECTOR(15 DOWNTO 0);
 Signal switch_to_mux: STD_LOGIC_VECTOR(15 downto 0);
 Signal mux_to_ssd  : STD_LOGIC_VECTOR(15 downto 0);
-Signal save_register_value: STD_LOGIC_VECTOR(15 downto 0); 
+Signal freeze_register_value: STD_LOGIC_VECTOR(15 downto 0); 
 Signal sync_to_switch : STD_LOGIC_VECTOR (9 downto 0);
-Signal save_register_enable: STD_LOGIC;
+Signal freeze_register_enable: STD_LOGIC;
 
 
 
@@ -36,6 +36,16 @@ Component SevenSegment is
 			);
 End Component ;
 
+Component ADC_Data is
+    Port( clk      : in STD_LOGIC;
+	       reset_n  : in STD_LOGIC; -- active-low
+			 voltage  : out STD_LOGIC_VECTOR (12 downto 0); -- Voltage in milli-volts
+			 distance : out STD_LOGIC_VECTOR (12 downto 0); -- distance in 10^-4 m (e.g. if distance = 33 cm, then 3300 is the value)
+			 ADC_raw  : out STD_LOGIC_VECTOR (11 downto 0); -- the latest 12-bit ADC value
+          ADC_out  : out STD_LOGIC_VECTOR (11 downto 0)  -- moving average of ADC value, over 256 samples,
+         );                                              -- number of samples defined by the averager module
+End Component;
+
 Component binary_bcd IS
    PORT(
       clk     : IN  STD_LOGIC;                      --system clock
@@ -45,7 +55,7 @@ Component binary_bcd IS
 		);           
 END Component;
 
-Component Save_Register is
+Component Freeze_Register is
 	port( 
 		enable: in std_logic;
 		clk : in std_logic; 
@@ -121,12 +131,12 @@ binary_bcd_ins: binary_bcd
       bcd      => bcd         
       );
 		
-Save_Reg_ins: Save_Register
+Freeze_Reg_ins: Freeze_Register
 	PORT MAP(
 		reset_n => reset_n,
 		clk => clk,
-		enable => save_register_enable,
-		q => save_register_value,
+		enable => freeze_register_enable,
+		q => freeze_register_value,
 		d => mux_to_ssd
 		);
 
@@ -135,7 +145,7 @@ MUX4TO1_ins_1: MUX4TO1
    PORT MAP(
       in1     => bcd(15 downto 0),                          
       in2 	  => switch_to_mux(15 downto 0),
-		in3	  => save_register_value,
+		in3	  => freeze_register_value,
 		in4	  => X"5A5A",
       s => sync_to_switch(9 downto 8),    
       mux_out => mux_to_ssd
@@ -151,9 +161,9 @@ sync : synchronizer
 Debounce_ins: debounce
 	PORT MAP(
 	clk  => clk,
-	button => save_button,
+	button => freeze_button,
 	reset_n => reset_n,
-	result => save_register_enable
+	result => freeze_register_enable
 	);
 
 
