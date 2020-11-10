@@ -22,15 +22,18 @@ Signal Num_Hex0, Num_Hex1, Num_Hex2, Num_Hex3, Num_Hex4, Num_Hex5 : STD_LOGIC_VE
 Signal DP_in, Blank:  STD_LOGIC_VECTOR (5 downto 0);
 
 --ADC Module Signals
-Signal ADC_sync_out: STD_LOGIC_VECTOR(37 downto 0);
 Signal voltage_ADC_out, distance_ADC_out: STD_LOGIC_VECTOR(15 downto 0);
 Signal voltage_ADC, distance_ADC: STD_LOGIC_VECTOR(12 downto 0);  
 
 --MUX4TO1 Module Signals
 Signal mux_to_freeze, freeze_to_ssd, switch_to_mux  : STD_LOGIC_VECTOR(15 downto 0);
-Signal SW_sync_out : STD_LOGIC_VECTOR (9 downto 0);
 Signal freeze_register_disable: STD_LOGIC;
 Signal moving_average_to_ADC_sync: STD_LOGIC_VECTOR (11 downto 0);
+
+--Synchronizer Signals 
+Signal sync_out: STD_LOGIC_VECTOR (47 downto 0);
+Signal SW_sync_out : STD_LOGIC_VECTOR (9 downto 0);
+Signal ADC_sync_out: STD_LOGIC_VECTOR(37 downto 0);
 
 
 Component SevenSegment is
@@ -59,15 +62,6 @@ Component binary_bcd IS
 		);  		
 END Component;
 
-
-Component ADC_synchronizer is 
-port(
-	  A : in std_logic_vector(37 downto 0); 
-	  G : out std_logic_vector(37 downto 0);
-	  clk: in std_logic
-	 );
-END Component;
-
 Component Freeze_Register is
 	port( 
 		disable_n: in std_logic;
@@ -89,8 +83,8 @@ END Component;
 
 Component synchronizer is 
 port(
-	  A : in std_logic_vector(9 downto 0); 
-	  G : out std_logic_vector(9 downto 0);
+	  A : in std_logic_vector(47 downto 0); 
+	  G : out std_logic_vector(47 downto 0);
 	  clk: in std_logic
 		);
 end Component; 
@@ -181,29 +175,16 @@ MUX4TO1_ins_1: MUX4TO1
       mux_out => mux_to_freeze
       );
 		
-		
-		
-		
-		
-		
-		
-		
-		--For ben: "0000" == x"0"
-		--For ben, 2: I dont like his criticism.
 sync : synchronizer
 	PORT MAP(
-	A => sw(9 downto 0), 
-	G => SW_sync_out, 
+	A => distance_ADC & voltage_ADC & moving_average_to_ADC_sync & sw, 
+	G => sync_out, 
 	clk => clk 
 	);
-
-ADC_sync_ins : ADC_synchronizer
-	PORT MAP(
-	A => distance_ADC & voltage_ADC & moving_average_to_ADC_sync,
-	G => ADC_sync_out,
-	clk => clk
-	);
 	
+ADC_sync_out <= sync_out(47 downto 10); 
+SW_sync_out <= sync_out(9 downto 0);
+
 	
 Debounce_ins: debounce
 	PORT MAP(

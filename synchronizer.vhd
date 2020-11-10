@@ -4,15 +4,15 @@ USE ieee.std_logic_1164.all;
 entity synchronizer is 
 
 port(
-	  A : in std_logic_vector(9 downto 0); 
-	  G : out std_logic_vector(9 downto 0);
+	  A : in std_logic_vector(47 downto 0); 
+	  G : out std_logic_vector(47 downto 0);
 	  clk: in std_logic 
 	);
 end synchronizer; 
 
 architecture behaviour of synchronizer is
 
-signal E: std_logic_vector(9 downto 0); 
+signal E: std_logic_vector(47 downto 0); 
 
 
 begin
