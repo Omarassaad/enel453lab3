@@ -27,9 +27,11 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 
 ENTITY debounce IS
+
   GENERIC(
     clk_freq    : INTEGER := 50_000_000;  --system clock frequency in Hz
     stable_time : INTEGER := 30);         --time button must remain stable in ms
+	 
   PORT(
     clk     : IN  STD_LOGIC;  --input clock
     reset_n : IN  STD_LOGIC;  --asynchronous active low reset
