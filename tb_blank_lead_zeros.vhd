@@ -60,7 +60,30 @@ port map (
 		SSD3_in <= "0110"; 
 		SSD4_in <= "0000";
 		state_switches <= "11";
-		
+	wait for time_delay;
+	
+	SSD2_in <= "0000";
+		SSD3_in <= "0000"; 
+		SSD4_in <= "0000";
+		state_switches <= "00";	
+	wait for time_delay;
+	
+	SSD2_in <= "0000";
+		SSD3_in <= "0000"; 
+		SSD4_in <= "0000";
+		state_switches <= "01";
+	wait for time_delay;
+	
+	SSD2_in <= "0000";
+		SSD3_in <= "0000"; 
+		SSD4_in <= "0000";
+		state_switches <= "10";
+	wait for time_delay;
+	
+	SSD2_in <= "0000";
+		SSD3_in <= "0000"; 
+		SSD4_in <= "0000";
+		state_switches <= "11";
 	wait for time_delay;
 		
 		
