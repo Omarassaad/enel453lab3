@@ -79,7 +79,12 @@ Component MUX4TO1 is
       );
 END Component; 
 
-
+Component MUX4TO1_6_bit is
+port ( in1, in2, in3, in4     : in  std_logic_vector(5 downto 0);	
+       s       : in  std_logic_vector(1 downto 0);
+       mux_out : out std_logic_vector(5 downto 0) -- notice no semi-colon 
+      );
+end Component; -- can also be written as "end entity;" or just "end;"
 
 Component synchronizer is 
 port(
