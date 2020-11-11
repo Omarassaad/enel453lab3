@@ -111,6 +111,7 @@ begin
 	Num_Hex3 <= freeze_to_ssd(15 downto 12);
    Num_Hex4 <= "0000";
    Num_Hex5 <= "0000";   
+   DP_in    <= "000" & SW_sync_out(8)&"00"; -- position of the decimal point in the display (1=LED on,0=LED off)
    Blank    <= "110000"; -- blank the 2 MSB 7-segment displays (1=7-seg display off, 0=7-seg display on)
              
                 
@@ -173,15 +174,6 @@ MUX4TO1_ins_1: MUX4TO1
       s => SW_sync_out(9 downto 8),    
       mux_out => mux_to_freeze
       );
-MUX4TO1_6_bit_ins_1 : MUX4TO1_6_bit
-	PORT MAP (
-		in1     => "000000",  
-		in2	  => "000000",		
-		in3	  => "001000",
-		in4   => "000100",
-      s => SW_sync_out(9 downto 8),    
-      mux_out => DP_in
-		);
 		
 sync : synchronizer
 	PORT MAP(
