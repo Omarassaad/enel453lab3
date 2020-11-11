@@ -73,23 +73,22 @@ Component Freeze_Register is
 END Component;
 
 Component MUX4TO1 is 
-	port( in1, in2, in3, in4     : in  std_logic_vector(15 downto 0);	
+   Generic(
+	  bitsperinput : integer := 1
+	  );
+	port( in1, in2, in3, in4     : in  std_logic_vector((bitsperinput-1) downto 0);	
        s       : in  std_logic_vector(1 downto 0);
-       mux_out : out std_logic_vector(15 downto 0) -- notice no semi-colon 
+       mux_out : out std_logic_vector((bitsperinput-1) downto 0) -- notice no semi-colon 
       );
 END Component; 
 
-Component MUX4TO1_6_bit is
-port ( in1, in2, in3, in4     : in  std_logic_vector(5 downto 0);	
-       s       : in  std_logic_vector(1 downto 0);
-       mux_out : out std_logic_vector(5 downto 0) -- notice no semi-colon 
-      );
-end Component; -- can also be written as "end entity;" or just "end;"
-
 Component synchronizer is 
+Generic(
+	  bits : integer := 1
+	  );
 port(
-	  A : in std_logic_vector(47 downto 0); 
-	  G : out std_logic_vector(47 downto 0);
+	  A : in std_logic_vector((bits-1) downto 0); 
+	  G : out std_logic_vector((bits-1) downto 0);
 	  clk: in std_logic
 		);
 end Component; 
@@ -97,7 +96,6 @@ end Component;
 Component debounce is
 
 GENERIC(
-
     clk_freq    : INTEGER := 50_000_000;  --system clock frequency in Hz
     stable_time : INTEGER := 30);         --time button must remain stable in ms
 	 
@@ -170,7 +168,11 @@ Freeze_Reg_ins: Freeze_Register
 
 		
 MUX4TO1_ins_1: MUX4TO1
-   PORT MAP(
+   Generic map(
+	  bitsperinput => 16
+	  )
+	  
+	PORT MAP(
       in1     => switch_to_mux,  
 		in2	  => X"0" & ADC_sync_out(11 downto 0),		
 		in3	  => voltage_ADC_out,
@@ -178,7 +180,11 @@ MUX4TO1_ins_1: MUX4TO1
       s => SW_sync_out(9 downto 8),    
       mux_out => mux_to_freeze
       );
-MUX4TO1_6_bit_ins_1 : MUX4TO1_6_bit
+		
+MUX4TO1_ins_2 : MUX4TO1
+	Generic map(
+	  bitsperinput => 6
+	  )
 	PORT MAP (
 		in1     => "000000",  
 		in2	  => "000000",		
@@ -189,6 +195,10 @@ MUX4TO1_6_bit_ins_1 : MUX4TO1_6_bit
 		);
 		
 sync : synchronizer
+	Generic map (
+	bits => 48
+	)
+	
 	PORT MAP(
 	A => distance_ADC & voltage_ADC & moving_average_to_ADC_sync & sw, 
 	G => sync_out, 
@@ -200,6 +210,9 @@ SW_sync_out <= sync_out(9 downto 0);
 
 	
 Debounce_ins: debounce
+	Generic map (
+		stable_time => 30
+	)
 	PORT MAP(
 	clk  => clk,
 	button => freeze_button,

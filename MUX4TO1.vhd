@@ -2,9 +2,12 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity MUX4TO1 is
-port ( in1, in2, in3, in4     : in  std_logic_vector(15 downto 0);	
+generic(
+		 bitsperinput : integer := 1
+		 ); 
+port ( in1, in2, in3, in4     : in  std_logic_vector((bitsperinput-1) downto 0);	
        s       : in  std_logic_vector(1 downto 0);
-       mux_out : out std_logic_vector(15 downto 0) -- notice no semi-colon 
+       mux_out : out std_logic_vector((bitsperinput-1) downto 0) -- notice no semi-colon 
       );
 end MUX4TO1; -- can also be written as "end entity;" or just "end;"
 
