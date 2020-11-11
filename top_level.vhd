@@ -53,13 +53,6 @@ Component ADC_Data is
          );                                              -- number of samples defined by the averager module
 End Component;
 
-Component MUX4TO1_6_bit is
-port ( in1, in2, in3, in4     : in  std_logic_vector(5 downto 0);	
-       s       : in  std_logic_vector(1 downto 0);
-       mux_out : out std_logic_vector(5 downto 0) -- notice no semi-colon 
-      );
-end Component;
-
 Component binary_bcd IS
    PORT(
       clk     : IN  STD_LOGIC;                      --system clock
@@ -118,6 +111,7 @@ begin
 	Num_Hex3 <= freeze_to_ssd(15 downto 12);
    Num_Hex4 <= "0000";
    Num_Hex5 <= "0000";   
+   DP_in    <= "000" & SW_sync_out(8)&"00"; -- position of the decimal point in the display (1=LED on,0=LED off)
    Blank    <= "110000"; -- blank the 2 MSB 7-segment displays (1=7-seg display off, 0=7-seg display on)
              
                 
@@ -181,16 +175,6 @@ MUX4TO1_ins_1: MUX4TO1
       mux_out => mux_to_freeze
       );
 		
-MUX4TO1_6_bit_ins_1: MUX4TO1_6_bit
-	PORT MAP (
-	in1 => "000000",
-	in2 => "000000",
-	in3 => "001000",
-	in4 => "000100",
-	s => SW_sync_out(9 downto 8),  
-	mux_out => DP_in
-	);
-
 sync : synchronizer
 	PORT MAP(
 	A => distance_ADC & voltage_ADC & moving_average_to_ADC_sync & sw, 
@@ -219,7 +203,6 @@ ADC_Data_ins: ADC_Data
 	distance => distance_ADC
 
 );	
-	
 	
 end Behavioral;
 
