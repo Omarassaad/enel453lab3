@@ -176,7 +176,7 @@ MUX4TO1_ins_1: MUX4TO1
       in1     => switch_to_mux,  
 		in2	  => X"0" & ADC_sync_out(11 downto 0),		
 		in3	  => voltage_ADC_out,
-		in4 	  => distance_ADC_out,
+		in4   => distance_ADC_out,
       s => SW_sync_out(9 downto 8),    
       mux_out => mux_to_freeze
       );
