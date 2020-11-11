@@ -8,14 +8,15 @@ architecture tb of tb_MUX4TO1 is
 
 --Comoponent declaration for the MUX4TO1
     component MUX4TO1
-        port (in1     : in std_logic_vector (15 downto 0); --S
-              in2     : in std_logic_vector (15 downto 0);
-              in3     : in std_logic_vector (15 downto 0);
-              in4     : in std_logic_vector (15 downto 0);
-              s       : in std_logic_vector (1 downto 0);
-              mux_out : out std_logic_vector (15 downto 0));
-    end component;
-
+		generic(
+			bitsperinput : integer := 1
+		 ); 
+        port ( 
+			in1, in2, in3, in4     : in  std_logic_vector((bitsperinput-1) downto 0);	
+			s       : in  std_logic_vector(1 downto 0);
+			mux_out : out std_logic_vector((bitsperinput-1) downto 0) -- notice no semi-colon 
+         );
+	end component; 
     signal in1     : std_logic_vector (15 downto 0);
     signal in2     : std_logic_vector (15 downto 0);
     signal in3     : std_logic_vector (15 downto 0);
@@ -31,6 +32,9 @@ begin
 --Instantiation of UUT (MUX4TO1)
 
     uut : MUX4TO1
+	generic map (
+	bitsperinput => 16
+	)
     port map (
 		in1     => in1,
 		in2     => in2,
@@ -52,9 +56,9 @@ begin
         s 	<=  "00";  --We expect Mux to output 0000_0000_0000_0000
 		
         wait for 100*time_delay;
-		in1 <=  X"5A5A";
-        in2 <=  X"5A5A";
-        in3 <=  X"5A5A";
+		in1 <=  X"0000";
+        in2 <=  X"00FF";
+        in3 <=  X"F0F0";
         in4 <=  X"5A5A";
         s 	<=  "11"; --We expect Mux to output 0101_1010_0101_1010
 		

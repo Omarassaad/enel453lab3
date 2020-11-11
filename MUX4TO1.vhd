@@ -5,7 +5,8 @@ entity MUX4TO1 is
 generic(
 		 bitsperinput : integer := 1
 		 ); 
-port ( in1, in2, in3, in4     : in  std_logic_vector((bitsperinput-1) downto 0);	
+port ( 
+	   in1, in2, in3, in4     : in  std_logic_vector((bitsperinput-1) downto 0);	
        s       : in  std_logic_vector(1 downto 0);
        mux_out : out std_logic_vector((bitsperinput-1) downto 0) -- notice no semi-colon 
       );

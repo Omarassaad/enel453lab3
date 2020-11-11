@@ -7,20 +7,26 @@ end tb_synchronizer;
 architecture behaviour of tb_synchronizer is 
 
 Component synchronizer is 
+Generic(
+	  bits : integer := 1 
+	  );
 port(
-	  A : in std_logic_vector(9 downto 0); 
-	  G : out std_logic_vector(9 downto 0);
+	  A : in std_logic_vector((bits-1) downto 0); 
+	  G : out std_logic_vector((bits-1) downto 0);
 	  clk: in std_logic 
 		);
 end component; 
 
-signal A, G: std_logic_vector(9 downto 0); 
+signal A, G: std_logic_vector(47 downto 0); 
 signal clk: std_logic;
 constant clk_period: time:= 20 ns; 
 
 begin 
 	
 	UUT:synchronizer
+	generic map(
+	bits => 48
+	)
 	port map(
 		A => A,
 		G => G, 
@@ -41,9 +47,9 @@ begin
 	
 	switch_process: process 
 		begin 
-			A <= "1111111111"; wait for 2*clk_period;
-			A <= "1010101010"; wait for 2*clk_period; 
-			A <= "0000000000"; wait for 4*clk_period; 
+			A <= X"111111111111"; wait for 2*clk_period;
+			A <= X"5A5A5A5A5A5A"; wait for 2*clk_period; 
+			A <= X"000000000000"; wait for 4*clk_period; 
 			wait;
 	end process; 
 
