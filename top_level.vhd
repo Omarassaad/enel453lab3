@@ -106,6 +106,14 @@ port(
     button  : IN  STD_LOGIC;  --input signal to be debounced
     result  : OUT STD_LOGIC); --debounced signal
 end Component;
+
+Component blank_lead_zeros is
+port ( 
+	   state_switches     		  : in std_logic_vector (1 downto 0);
+		SSD2_in, SSD3_in, SSD4_in : in std_logic_vector (3 downto 0);
+		blank_out 					  : out std_logic_vector (5 downto 0)
+      );
+end Component; 
   
 begin
 	Num_Hex0 <= freeze_to_ssd(3 downto 0);
@@ -114,7 +122,6 @@ begin
 	Num_Hex3 <= freeze_to_ssd(15 downto 12);
    Num_Hex4 <= "0000";
    Num_Hex5 <= "0000";   
-   Blank    <= "110000"; -- blank the 2 MSB 7-segment displays (1=7-seg display off, 0=7-seg display on)
              
                 
 SevenSegment_ins: SevenSegment  
@@ -229,6 +236,14 @@ ADC_Data_ins: ADC_Data
 	distance => distance_ADC
 
 );	
+blank_lead_zeros_ins: blank_lead_zeros
+ PORT MAP(
+		state_switches => SW_sync_out(9 downto 8), 
+		SSD2_in => HEX1,
+		SSD3_in => HEX2,
+		SSD4_in => HEX3,
+		blank_out => Blank
+			);
 	
 end Behavioral;
 
