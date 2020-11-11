@@ -239,9 +239,9 @@ ADC_Data_ins: ADC_Data
 blank_lead_zeros_ins: blank_lead_zeros
  PORT MAP(
 		state_switches => SW_sync_out(9 downto 8), 
-		SSD2_in => HEX1,
-		SSD3_in => HEX2,
-		SSD4_in => HEX3,
+		SSD2_in => Num_Hex1,
+		SSD3_in => Num_Hex2,
+		SSD4_in => Num_Hex3,
 		blank_out => Blank
 			);
 	
