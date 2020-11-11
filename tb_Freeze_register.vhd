@@ -5,9 +5,9 @@ USE ieee.numeric_std.all;
 entity tb_Freeze_Register is
 end tb_Freeze_Register;
 
-architecture behaviour of tb_Save_Register is 
+architecture behaviour of tb_Freeze_Register is 
 
-component Save_Register is 
+component Freeze_Register is 
 port (
 	disable_n: in std_logic;
 	clk : in std_logic; 
@@ -27,7 +27,7 @@ constant clk_period : time := 20 ns;
 
 begin 
 
-UUT : Save_Register
+UUT : Freeze_Register
 port map (
 	clk =>clk, 
 	disable_n => disable_n, 
@@ -64,11 +64,11 @@ input_process: process
 	
 save_process: process
 	begin 
-		enable <= '1'; wait for 4*clk_period; 
-		enable <= '0'; wait for clk_period; 
-		enable <= '1'; wait for 3*clk_period; 
-		enable <= '0'; wait for clk_period; 
-		enable <= '1'; wait for clk_period; 
+		disable_n <= '1'; wait for 4*clk_period; 
+		disable_n <= '0'; wait for clk_period; 
+		disable_n <= '1'; wait for 3*clk_period; 
+		disable_n <= '0'; wait for clk_period; 
+		disable_n <= '1'; wait for clk_period; 
 		wait;
 	end process; 
 
