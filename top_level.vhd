@@ -180,10 +180,10 @@ MUX4TO1_ins_1: MUX4TO1
 	  )
 	  
 	PORT MAP(
-      in1     => switch_to_mux,  
-		in2	  => X"0" & ADC_sync_out(11 downto 0),		
-		in3	  => voltage_ADC_out,
-		in4   => distance_ADC_out,
+      in1     => switch_to_mux,  -- input is 00, hex mode
+		in2	  => X"0" & ADC_sync_out(11 downto 0),	-- input is 10, moving average mode	
+		in3	  => voltage_ADC_out, -- input is 01, voltage mode
+		in4   => distance_ADC_out, -- input is 11, distance mode
       s => SW_sync_out(9 downto 8),    
       mux_out => mux_to_freeze
       );
