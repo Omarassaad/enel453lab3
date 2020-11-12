@@ -225,7 +225,8 @@ SW_sync_out <= sync_out(9 downto 0);
 	
 Debounce_ins: debounce
 	Generic map (
-		stable_time => 30
+		stable_time => 1 --for modelsim
+		--stable_time => 30 --for implementation
 	)
 	PORT MAP(
 	clk  => clk,

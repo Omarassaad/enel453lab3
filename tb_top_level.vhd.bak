@@ -37,7 +37,7 @@ architecture tb of tb_top_level is
     signal HEX5        : std_logic_vector (7 downto 0);
 
     constant TbPeriod : time := 20 ns; -- EDIT Put right period here
-    constant delay : time := 200000 ns;
+    constant delay : time := 200 us;
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
@@ -86,24 +86,24 @@ begin
 		-- Operation Mode 1 Switch Inputs to Hexadecimal
 		SW <= "0011111111"; wait for delay; -- displaying FF in Hexadecimal
 		-- Operation Mode 2: ADC_value
-		SW <= "1000000000"; wait for delay; -- display ADC_value in Hexadecimal on SSD
+		SW <= "10--------"; wait for delay; -- display ADC_value in Hexadecimal on SSD
 		-- Operation Mode 3: Voltage
-		SW <= "0100000000"; wait for delay; -- display VAO in volts on SSD to the 3rd decimal place
+		SW <= "01--------"; wait for delay; -- display VAO in volts on SSD to the 3rd decimal place
 		-- Operation Mode 4: distance
-		SW <= "1100000000"; wait for delay; -- display distance in cm on SSD to the 2nd decimal place
+		SW <= "11--------"; wait for delay; -- display distance in cm on SSD to the 2nd decimal place
 		-- Testing Freeze button
 		SW <= "0011111111" ; wait for 2*TbPeriod;
 		freeze_button <= '0'; wait for 1 ms; 
-		SW <= "0100000000"; wait for delay;
-		SW <= "1000000000"; wait for delay; 
-		SW <= "1100000000"; wait for delay; 
+		SW <= "01--------"; wait for delay;
+		SW <= "10--------"; wait for delay; 
+		SW <= "11--------"; wait for delay; 
 		freeze_button <= '1'; wait for 1 ms;
 		-- Testing reset_n
 		SW <= "0011111111" ; wait for delay;
 		reset_n <= '0'; wait for delay;
-		SW <= "0100000000"; wait for delay;
-		SW <= "1000000000"; wait for delay;
-		SW <= "1100000000"; wait for delay; 
+		SW <= "01--------"; wait for delay;
+		SW <= "10--------"; wait for delay;
+		SW <= "11--------"; wait for delay; 
 		reset_n <= '1'; wait for delay;
 		
         -- Stop the clock and hence terminate the simulation
