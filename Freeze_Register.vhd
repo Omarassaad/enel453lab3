@@ -20,7 +20,7 @@ architecture reglogic of Freeze_Register is
 signal zeros : std_logic_vector (bits downto 0); 
 
 begin
-zeros <=  (others => '0'); 
+
 	process (clk, reset_n)
 		begin
 			if reset_n = '0' then 

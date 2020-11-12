@@ -12,8 +12,8 @@ end blank_lead_zeros;
 
 architecture BEHAVIOR of blank_lead_zeros is
 
-Signal  or3_out, or4_out : std_logic;
-Signal or2_out, mux_out, mux_out1 : std_logic_vector (0 downto 0);
+Signal   or4_out : std_logic;
+Signal or3_out, or2_out, mux_out, mux_out1, mux_out2 : std_logic_vector (0 downto 0);
 
 Component MUX4TO1 is
 
@@ -49,18 +49,25 @@ end Component; -- can also be written as "end entity;" or just "end;"
       s => state_switches,
       mux_out => mux_out
       );
-	 MUX2TO1_inst : MUX2TO1
+	 MUX2TO1_inst1 : MUX2TO1
 	 PORT MAP(
 		in1   => or2_out, 
 		in2	  => "1",
 		s => state_switches(0), 
 		mux_out => mux_out1
 		); 
+	MUX2TO1_inst2 : MUX2TO1
+	 PORT MAP(
+		in1   => or3_out, 
+		in2	  => "1",
+		s => state_switches(0), 
+		mux_out => mux_out2
+		); 
 		
 		
 		or4_out <= mux_out(0) or SSD4_in(3) or SSD4_in(2)  or SSD4_in(1)  or SSD4_in(0);
-		or3_out <= or4_out or SSD3_in(3) or SSD3_in(2)  or SSD3_in(1)  or SSD3_in(0);
-		or2_out(0) <= or3_out or SSD2_in(3) or SSD2_in(2)  or SSD2_in(1)  or SSD2_in(0);
-		blank_out <= "11" & (not or4_out) & (not or3_out) & (not mux_out1) & '0';
+		or3_out(0) <= or4_out or SSD3_in(3) or SSD3_in(2)  or SSD3_in(1)  or SSD3_in(0);
+		or2_out(0) <= or3_out(0) or SSD2_in(3) or SSD2_in(2)  or SSD2_in(1)  or SSD2_in(0);
+		blank_out <= "11" & (not or4_out) & (not mux_out2) & (not mux_out1) & '0';
 		
 end BEHAVIOR; -- can also be written as "end;"
