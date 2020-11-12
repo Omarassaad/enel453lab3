@@ -20,15 +20,18 @@ architecture Behavioral of top_level is
 --SSD Module Signals
 Signal Num_Hex0, Num_Hex1, Num_Hex2, Num_Hex3, Num_Hex4, Num_Hex5 : STD_LOGIC_VECTOR (3 downto 0):= (others=>'0');   
 Signal DP_in, Blank:  STD_LOGIC_VECTOR (5 downto 0);
+Signal DP_in_before_freeze :  STD_LOGIC_VECTOR (5 downto 0);
+Signal Blank_before_freeze:  STD_LOGIC_VECTOR (5 downto 0);
 
 --ADC Module Signals
 Signal voltage_ADC_out, distance_ADC_out: STD_LOGIC_VECTOR(15 downto 0);
 Signal voltage_ADC, distance_ADC: STD_LOGIC_VECTOR(12 downto 0);  
 
 --MUX4TO1 Module Signals
-Signal mux_to_freeze, freeze_to_ssd, switch_to_mux  : STD_LOGIC_VECTOR(15 downto 0);
+Signal mux_before_freeze, switch_to_mux  : STD_LOGIC_VECTOR(15 downto 0);
 Signal freeze_register_disable: STD_LOGIC;
 Signal moving_average_to_ADC_sync: STD_LOGIC_VECTOR (11 downto 0);
+Signal freeze_to_ssd : STD_LOGIC_VECTOR (27 downto 0); 
 
 --Synchronizer Signals 
 Signal sync_out: STD_LOGIC_VECTOR (47 downto 0);
@@ -38,6 +41,7 @@ Signal ADC_sync_out: STD_LOGIC_VECTOR(37 downto 0);
 --Signal
 Signal StateMux_in2: STD_LOGIC_VECTOR(15 downto 0);
 Signal SynchronizerConcat_A: STD_LOGIC_VECTOR(47 downto 0);
+Signal state_bits_input : STD_LOGIC_VECTOR (27 downto 0);
 
 
 
@@ -68,11 +72,14 @@ Component binary_bcd IS
 END Component;
 
 Component Freeze_Register is
+	generic(
+	bits: integer := 15
+	);
 	port( 
 		disable_n: in std_logic;
 		clk : in std_logic; 
-		d : in std_logic_vector (15 downto 0); 
-		q : out std_logic_vector (15 downto 0); 
+		d : in std_logic_vector (bits downto 0); 
+		q : out std_logic_vector (bits downto 0); 
 		reset_n : in std_logic
 	);
 END Component;
@@ -170,13 +177,20 @@ bcd_voltage: binary_bcd
       binary   => ADC_sync_out(24 downto 12),    
       bcd      => voltage_ADC_out         
       );
+
+state_bits_input <= Blank_before_freeze & DP_in_before_freeze & mux_before_freeze; 
+Blank <= freeze_to_ssd(27 downto 22); 
+DP_in <= freeze_to_ssd(21 downto 16); 
 		
 Freeze_Reg_ins: Freeze_Register
+	GENERIC MAP (
+		bits => 27
+	)
 	PORT MAP(
 		reset_n => reset_n,
 		clk => clk,
 		disable_n => freeze_register_disable,
-		d => mux_to_freeze,
+		d => state_bits_input,
 		q => freeze_to_ssd
 		);
 
@@ -192,7 +206,7 @@ MUX4TO1_ins_1: MUX4TO1
 		in3	=> voltage_ADC_out, -- input is 01, voltage mode
 		in4   => distance_ADC_out, -- input is 11, distance mode
       s => SW_sync_out(9 downto 8),    
-      mux_out => mux_to_freeze
+      mux_out => mux_before_freeze
       );
 		
 MUX4TO1_ins_2 : MUX4TO1
@@ -205,7 +219,7 @@ MUX4TO1_ins_2 : MUX4TO1
 		in3	  => "001000",
 		in4   => "000100",
       s => SW_sync_out(9 downto 8),    
-      mux_out => DP_in
+      mux_out => DP_in_before_freeze
 		);
 		
 sync : synchronizer
@@ -250,7 +264,7 @@ blank_lead_zeros_ins: blank_lead_zeros
 		SSD2_in => Num_Hex1,
 		SSD3_in => Num_Hex2,
 		SSD4_in => Num_Hex3,
-		blank_out => Blank
+		blank_out => Blank_before_freeze
 			);
 	
 end Behavioral;
