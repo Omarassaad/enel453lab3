@@ -73,22 +73,26 @@ begin
         wait for 100 ns;
 		freeze_button <= '1';
 		wait for 1 ms; 
-
         -- EDIT Add stimuli here
 			SW <= "0011111111"; wait for delay; -- displaying FF in Hexadecimal
 		-- Operation Mode 2: ADC_value
 		SW <= "1000000000"; wait for delay; -- display ADC_value in Hexadecimal on SSD
+
+		
 		-- Operation Mode 3: Voltage
 		SW <= "0100000000"; wait for delay; -- display VAO in volts on SSD to the 3rd decimal place
 		-- Operation Mode 4: distance
 		SW <= "1100000000"; wait for delay; -- display distance in cm on SSD to the 2nd decimal place
 		-- Testing Freeze button
 		SW <= "0011111111" ; wait for 2*TbPeriod;
-		freeze_button <= '0'; wait for 1 ms; 
+		freeze_button <= '0'; wait for 1.2 ms; 
 		SW <= "0100000000"; wait for delay;
 		SW <= "1000000000"; wait for delay; 
 		SW <= "1100000000"; wait for delay; 
-		freeze_button <= '1'; wait for 1 ms;
+		freeze_button <= '1'; wait for 1.2 ms;
+	
+		
+		
 		-- Testing reset_n
 		SW <= "0011111111" ; wait for delay;
 		reset_n <= '0'; wait for delay;
@@ -96,11 +100,14 @@ begin
 		SW <= "1000000000"; wait for delay;
 		SW <= "1100000000"; wait for delay; 
 		reset_n <= '1'; wait for delay;
-        wait for 100 * TbPeriod;
-
-        -- Stop the clock and hence terminate the simulation
+      
+		wait for 10000 * TbPeriod;
         TbSimEnded <= '1';
         wait;
+		assert (FALSE) report "Simulation end."  severity failure; 
+			
+	
+	  
     end process;
 
 end tb;
