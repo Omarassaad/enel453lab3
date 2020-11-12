@@ -101,6 +101,14 @@ begin
 		SW <= "1100000000"; wait for delay; 
 		reset_n <= '1'; wait for delay;
       
+			-- Testing Freeze button
+		SW <= "0111111111" ; wait for 2*TbPeriod;
+		freeze_button <= '0'; wait for 1.2 ms; 
+		SW <= "0100000000"; wait for delay;
+		SW <= "1000000000"; wait for delay; 
+		SW <= "1100000000"; wait for delay; 
+		freeze_button <= '1'; wait for 1.2 ms;
+	
 		wait for 10000 * TbPeriod;
         TbSimEnded <= '1';
         wait;

@@ -38,6 +38,7 @@ Signal ADC_sync_out: STD_LOGIC_VECTOR(37 downto 0);
 --Signal
 Signal StateMux_in2: STD_LOGIC_VECTOR(15 downto 0);
 Signal SynchronizerConcat_A: STD_LOGIC_VECTOR(47 downto 0);
+Signal sswitch_out : STD_LOGIC_VECTOR(1 downto 0);
 
 
 
@@ -71,8 +72,10 @@ Component Freeze_Register is
 	port( 
 		disable_n: in std_logic;
 		clk : in std_logic; 
-		d : in std_logic_vector (15 downto 0); 
+		d : in std_logic_vector (15 downto 0);
+		sswitch_in : in std_logic_vector (1 downto 0); 
 		q : out std_logic_vector (15 downto 0); 
+		sswitch_out : out std_logic_vector (1 downto 0); 
 		reset_n : in std_logic
 	);
 END Component;
@@ -177,7 +180,9 @@ Freeze_Reg_ins: Freeze_Register
 		clk => clk,
 		disable_n => freeze_register_disable,
 		d => mux_to_freeze,
-		q => freeze_to_ssd
+		sswitch_in => SW_sync_out(9 downto 8),
+		q => freeze_to_ssd,
+		sswitch_out => sswitch_out
 		);
 
 		
@@ -204,7 +209,7 @@ MUX4TO1_ins_2 : MUX4TO1
 		in2	  => "000000",		
 		in3	  => "001000",
 		in4   => "000100",
-      s => SW_sync_out(9 downto 8),    
+      s => sswitch_out,    
       mux_out => DP_in
 		);
 		
@@ -246,7 +251,7 @@ ADC_Data_ins: ADC_Data
 );	
 blank_lead_zeros_ins: blank_lead_zeros
  PORT MAP(
-		state_switches => SW_sync_out(9 downto 8), 
+		state_switches => sswitch_out, 
 		SSD2_in => Num_Hex1,
 		SSD3_in => Num_Hex2,
 		SSD4_in => Num_Hex3,
