@@ -33,6 +33,7 @@ signal REG_ARRAY : Register_Array(2**N downto 1);
 
 type temporary is array(integer range <>) of integer;
 signal tmp : temporary((2**N)-1 downto 1);
+Constant tmp_zeros : integer := 0;
 
 signal tmplast : std_logic_vector(2**N-1 downto 0);
 constant Zeros : STD_LOGIC_VECTOR(11 downto 0) := (others => '0');
@@ -66,11 +67,16 @@ begin
    
    
 	   LoopB1: for i in 1 to (2**N)/2 generate
-	   reg_between_adder : process (clk)
+	   reg_between_adder : process (clk, reset_n)
 		begin 
-			if rising_edge(clk) then 
+			if (reset_n = '0') then 
+			tmp(i) <= tmp_zeros;
+			
+			elsif rising_edge(clk) then 
 		  tmp(i) <= to_integer(unsigned(REG_ARRAY((2*i)-1)))  + to_integer(unsigned(REG_ARRAY(2*i)));
 			end if; 
+			
+			
 		end process; 
 	   end generate LoopB1;
 	   
@@ -79,11 +85,16 @@ begin
 	   
 	   
 	   LoopB2: for i in ((2**N)/2)+1 to (2**N)-1 generate
-	   reg_between_adder_2 : process (clk)
+	   reg_between_adder_2 : process (clk, reset_n)
 		begin 
-			if rising_edge(clk) then 
+			if (reset_n = '0') then 
+			tmp(i) <= tmp_zeros;
+			
+			elsif rising_edge(clk) then 
 		  tmp(i) <= tmp(2*(i-(2**N)/2)-1) + tmp(2*(i-(2**N)/2));
 		  end if; 
+		  
+
 		end process; 
 	   end generate LoopB2;
 

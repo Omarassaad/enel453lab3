@@ -44,7 +44,7 @@ end Component; -- can also be written as "end entity;" or just "end;"
 	PORT MAP(
         in1     => "1", -- hex
 		in2	  => "0", -- moving average, 10 
-		in3	  => "1", -- voltage, 10 
+		in3	  => "1", -- voltage, 01 
 		in4     => "0", --decimal, 11
       s => state_switches,
       mux_out => mux_out

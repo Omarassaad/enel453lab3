@@ -19,7 +19,7 @@ port (
 end component;
 
 
-signal clk, disable_n, reset: std_logic; 
+signal clk, disable_n, reset_n: std_logic; 
 signal d : std_logic_vector(15 downto 0);
 signal q : std_logic_vector(15 downto 0);
 constant clk_period : time := 20 ns; 
@@ -33,7 +33,7 @@ port map (
 	disable_n => disable_n, 
 	d => d, 
 	q => q, 
-	reset_n => reset
+	reset_n => reset_n
 
 ); 
 
@@ -43,7 +43,7 @@ clk_process: process is
 		
 	begin 
 	
-	while i < 10 loop
+	while i < 12 loop
 		clk <= '0'; wait for clk_period/2; 
 		clk <= '1'; wait for clk_period/2; 
 		i:= i+1;
@@ -52,33 +52,20 @@ clk_process: process is
 	
 	end process; 
 	
-input_process: process
+stim_process: process 
 	begin 
-		d <= X"0000"; wait for 2*clk_period; 
-		d <= X"00FF"; wait for 2*clk_period; 
-		d <= X"005A"; wait for 2*clk_period; 
-		d <= X"0012"; wait for 2*clk_period; 
-		d <= X"0076"; wait for 2*clk_period;
-		wait; 
-	end process; 
+	reset_n <= '1'; d <= X"0000"; disable_n <= '1';  wait for 2*clk_period; 
+	d <= X"00FF"; wait for 2*clk_period; 
+	disable_n <= '0'; wait for clk_period; 
+	d <= X"0111"; wait for clk_period; 
+	d <= X"FF00"; wait for clk_period; 
+	disable_n <= '1'; wait for clk_period; 
+	reset_n <= '0'; d <= X"F0F0"; wait for clk_period; 
+	d <= X"0F0F"; wait for clk_period; 
+	reset_n <= '1'; wait for 2*clk_period; 
 	
-save_process: process
-	begin 
-		disable_n <= '1'; wait for 4*clk_period; 
-		disable_n <= '0'; wait for clk_period; 
-		disable_n <= '1'; wait for 3*clk_period; 
-		disable_n <= '0'; wait for clk_period; 
-		disable_n <= '1'; wait for clk_period; 
-		wait;
+	wait; 
 	end process; 
 
-reset_process: process 
-	begin 
-		reset <= '0'; wait for clk_period;
-		reset <= '1'; wait for 5*clk_period; 
-		reset <= '0'; wait for clk_period; 
-		reset <= '1'; wait for 3*clk_period; 
-		wait; 
-	end process;
 
 end behaviour; 
