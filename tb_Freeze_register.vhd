@@ -8,9 +8,6 @@ end tb_Freeze_Register;
 architecture behaviour of tb_Freeze_Register is 
 
 component Freeze_Register is 
-generic(
-	bits: integer := 15
-	);
 port (
 	disable_n: in std_logic;
 	clk : in std_logic; 
