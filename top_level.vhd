@@ -35,6 +35,11 @@ Signal sync_out: STD_LOGIC_VECTOR (47 downto 0);
 Signal SW_sync_out : STD_LOGIC_VECTOR (9 downto 0);
 Signal ADC_sync_out: STD_LOGIC_VECTOR(37 downto 0);
 
+--Signal
+Signal StateMux_in2: STD_LOGIC_VECTOR(15 downto 0);
+Signal SynchronizerConcat_A: STD_LOGIC_VECTOR(47 downto 0);
+
+
 
 Component SevenSegment is
     Port( Num_Hex0,Num_Hex1,Num_Hex2,Num_Hex3,Num_Hex4,Num_Hex5 : in  STD_LOGIC_VECTOR (3 downto 0);
@@ -122,6 +127,8 @@ begin
 	Num_Hex3 <= freeze_to_ssd(15 downto 12);
    Num_Hex4 <= "0000";
    Num_Hex5 <= "0000";   
+	StateMux_in2 <= X"0" & ADC_sync_out(11 downto 0);
+ 	SynchronizerConcat_A <= distance_ADC & voltage_ADC & moving_average_to_ADC_sync & sw;
              
                 
 SevenSegment_ins: SevenSegment  
@@ -180,9 +187,9 @@ MUX4TO1_ins_1: MUX4TO1
 	  )
 	  
 	PORT MAP(
-      in1     => switch_to_mux,  -- input is 00, hex mode
-		in2	  => X"0" & ADC_sync_out(11 downto 0),	-- input is 10, moving average mode	
-		in3	  => voltage_ADC_out, -- input is 01, voltage mode
+      		in1     => switch_to_mux,  -- input is 00, hex mode
+		in2	=> StateMux_in2,	-- input is 10, moving average mode	
+		in3	=> voltage_ADC_out, -- input is 01, voltage mode
 		in4   => distance_ADC_out, -- input is 11, distance mode
       s => SW_sync_out(9 downto 8),    
       mux_out => mux_to_freeze
@@ -207,7 +214,7 @@ sync : synchronizer
 	)
 	
 	PORT MAP(
-	A => distance_ADC & voltage_ADC & moving_average_to_ADC_sync & sw, 
+	A => SynchronizerConcat_A, 
 	G => sync_out, 
 	clk => clk 
 	);
