@@ -11,17 +11,18 @@ component Freeze_Register is
 port (
 	disable_n: in std_logic;
 	clk : in std_logic; 
-	d : in std_logic_vector (15 downto 0); 
+	d : in std_logic_vector (15 downto 0);
+	sswitch_in : in std_logic_vector (1 downto 0); 
 	q : out std_logic_vector (15 downto 0); 
+	sswitch_out : out std_logic_vector (1 downto 0); 
 	reset_n : in std_logic
-
 );
 end component;
 
 
 signal clk, disable_n, reset_n: std_logic; 
-signal d : std_logic_vector(15 downto 0);
-signal q : std_logic_vector(15 downto 0);
+signal d,q  : std_logic_vector(15 downto 0);
+signal sswitch_in,sswitch_out: std_logic_vector(1 downto 0);
 constant clk_period : time := 20 ns; 
 
 
@@ -29,10 +30,13 @@ begin
 
 UUT : Freeze_Register
 port map (
+
 	clk =>clk, 
 	disable_n => disable_n, 
 	d => d, 
+	sswitch_in => sswitch_in,
 	q => q, 
+	sswitch_out => sswitch_out,
 	reset_n => reset_n
 
 ); 
@@ -54,6 +58,7 @@ clk_process: process is
 	
 stim_process: process 
 	begin 
+	sswitch_in <= "00"; 
 	reset_n <= '1'; d <= X"0000"; disable_n <= '1';  wait for 2*clk_period; 
 	d <= X"00FF"; wait for 2*clk_period; 
 	disable_n <= '0'; wait for clk_period; 
