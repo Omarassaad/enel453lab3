@@ -111,8 +111,8 @@ begin
 	
 		wait for 10000 * TbPeriod;
         TbSimEnded <= '1';
-        wait;
-		assert (FALSE) report "Simulation end."  severity failure; 
+      
+        assert false report "Simulation ended" severity failure; -- need this line to halt the testbench  
 			
 	
 	  
