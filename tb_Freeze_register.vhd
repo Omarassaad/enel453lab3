@@ -58,15 +58,15 @@ clk_process: process is
 	
 stim_process: process 
 	begin 
-	sswitch_in <= "00"; 
-	reset_n <= '1'; d <= X"0000"; disable_n <= '1';  wait for 2*clk_period; 
+	
+	sswitch_in <= "00"; reset_n <= '1'; d <= X"0000"; disable_n <= '1';  wait for 2*clk_period; 
 	d <= X"00FF"; wait for 2*clk_period; 
 	disable_n <= '0'; wait for clk_period; 
-	d <= X"0111"; wait for clk_period; 
-	d <= X"FF00"; wait for clk_period; 
+	sswitch_in <= "10"; d <= X"0111"; wait for clk_period; 
+	sswitch_in <= "11"; d <= X"FF00"; wait for clk_period; 
 	disable_n <= '1'; wait for clk_period; 
 	reset_n <= '0'; d <= X"F0F0"; wait for clk_period; 
-	d <= X"0F0F"; wait for clk_period; 
+	sswitch_in <= "10"; d <= X"0F0F"; wait for clk_period; 
 	reset_n <= '1'; wait for 2*clk_period; 
 	
 	wait; 
