@@ -23,15 +23,20 @@ begin
 		begin
 			if reset_n = '0' then 
 				q <= X"0000";
-				if rising_edge(clk) then 
-				sswitch_out <= sswitch_in;
-				end if;
 			elsif rising_edge(clk) then
 				if disable_n = '1' then
 					q <= d; 
-					sswitch_out <= sswitch_in; 
 				end if;
 			end if; 
 	end process; 
 	
+	process (clk)
+		begin 
+		
+			if rising_edge(clk) then
+				if disable_n = '1' then
+					sswitch_out <= sswitch_in; 
+				end if;
+			end if; 
+		end process;
 end reglogic;
