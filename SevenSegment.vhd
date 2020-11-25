@@ -1,5 +1,3 @@
--- --- Seven segment component
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL; 
 
@@ -11,7 +9,7 @@ entity SevenSegment is
 end SevenSegment;
 architecture Behavioral of SevenSegment is
 
---Note that component declaration comes after architecture and before begin (common source of error).
+
    Component SevenSegment_decoder is 
       port(  H        : out STD_LOGIC_VECTOR (7 downto 0);
              input    : in  STD_LOGIC_VECTOR (3 downto 0);
@@ -20,7 +18,6 @@ architecture Behavioral of SevenSegment is
    end  Component;   
 begin
 
---Note that port mapping begins after begin (common source of error).
 
 decoder0: SevenSegment_decoder  port map 
                                    (H     => Hex0,

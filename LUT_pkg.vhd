@@ -3,9 +3,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 
  package LUT_pkg is
 
--- This array has been pasted in from the Excel spreadsheet.
--- In this array, the values are distances, in units 10^-4 m. 
--- To get cm, move the decimal point 2 places to the left.
 
 type array_1d is array (0 to 4095) of integer;
 constant v2d_LUT : array_1d := (

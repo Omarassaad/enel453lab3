@@ -1,4 +1,3 @@
--- --- Seven segment component
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -21,12 +20,12 @@ begin
 			seven_seg(6 downto 0)<="0000000"; -- this blanks the display
 		else -- don't blank and display the required digit
 															  --  Segments, 0=LED off, 1=LED on
-			Case input is                         --  6543210                -- 7-Segment Display Segments
-				when "0000" => seven_seg(6 downto 0)<="0111111"; -- 0                  0  
-				when "0001" => seven_seg(6 downto 0)<="0000110"; -- 1                5   1
-				when "0010" => seven_seg(6 downto 0)<="1011011"; -- 2                  6
-				when "0011" => seven_seg(6 downto 0)<="1001111"; -- 3                4   2
-				when "0100" => seven_seg(6 downto 0)<="1100110"; -- 4                  3    DP
+			Case input is                         --  6543210                
+				when "0000" => seven_seg(6 downto 0)<="0111111"; -- 0                  
+				when "0001" => seven_seg(6 downto 0)<="0000110"; -- 1                
+				when "0010" => seven_seg(6 downto 0)<="1011011"; -- 2                  
+				when "0011" => seven_seg(6 downto 0)<="1001111"; -- 3                
+				when "0100" => seven_seg(6 downto 0)<="1100110"; -- 4
 				when "0101" => seven_seg(6 downto 0)<="1101101"; -- 5
 				when "0110" => seven_seg(6 downto 0)<="1111101"; -- 6
 				when "0111" => seven_seg(6 downto 0)<="0000111"; -- 7
@@ -51,13 +50,4 @@ H(6 downto 0) <= not seven_seg;
 H(7) <= not DP; -- if DP=0 LED off, if DP=1 LED on
 
 end Behavioral;
---   Another representation of the 7-segment display
---     0
---     _
---  5|   |1 
---     _
---     6
---  4|   |2
---     _    DP
---     3   
 

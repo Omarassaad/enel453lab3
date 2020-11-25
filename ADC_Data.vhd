@@ -28,12 +28,10 @@ component ADC_Conversion_wrapper is -- this brings in the ADC module, either as 
           ADC_out            : out STD_LOGIC_VECTOR (11 downto 0)
          );
 end component;
---******************************************************************************************************************************************
--- Comment out one of the two lines below, to select whether you want RTL (for DE10-Lite board) or simulation (for testbench) for the ADC **
---******************************************************************************************************************************************
---for ADC_ins : ADC_Conversion_wrapper use entity work.ADC_Conversion_wrapper(RTL);        -- selects the RTL architecture
-for ADC_ins : ADC_Conversion_wrapper use entity work.ADC_Conversion_wrapper(simulation); -- selects the simulation architecture
---******************************************************************************************************************************************
+
+for ADC_ins : ADC_Conversion_wrapper use entity work.ADC_Conversion_wrapper(RTL);        -- selects the RTL architecture
+--for ADC_ins : ADC_Conversion_wrapper use entity work.ADC_Conversion_wrapper(simulation); -- selects the simulation architecture
+
 
 Component voltage2distance_array2 IS -- converts ADC's voltage value to distance value
 	PORT(                             -- according to Sharp GP2Y0A41SK0F Distance Sensor datasheet
@@ -91,14 +89,7 @@ ADC_out <= ADC_out_ave;
 
 ADC_raw <= ADC_raw_temp;
 
-voltage_temp <= '0' & std_logic_vector(resize(unsigned(ADC_out_ave)*2500*2/(2**12),voltage_temp'length-1));  -- Converting ADC_out_ave, a 12-bit binary value, to voltage value (in mV), using type conversions
--- Above equation:  2**12 represents 2^12 = 4096, and this is scaling factor to normalize the ADC 12-bit value to 1 (technically 4095/4096 = 0.9997559). 
---                    Dividing by 4096 is trivial for digital hardware, it's just a shift of the binary point. Dividing by 4095 is difficult, resulting a complex divider that reduces the Fmax to 21.1 MHz.
---                    The difference in accuracy between /4096 and /4095 is neglible for this application. If you are curious, talk to Denis Onen about how to efficiently do /4095, he is an expert in these kinds of calculations.
---                  2500*2 represents the scaling factor to convert the normalized 12-bit ADC value to the ratiometric voltage value, in milli-volts (mV). 
---                     The ADC accepts a 2.5 V input signal (2500 mV) and converts it to a 12-bit ratiometric number. However, there is a 2:1 voltage divider before the ADC input, so the actual 
---                     input voltage range is 0V - 5V, which gets converted to a 12-bit ratiometric number. So, 2500*2 is 5000, but is written as 2500*2 to give the user the hint that there is voltage
---                     division going on at the ADC input. 
+voltage_temp <= '0' & std_logic_vector(resize(unsigned(ADC_out_ave)*2500*2/(2**12),voltage_temp'length-1));  
 
 voltage <= voltage_temp;
 

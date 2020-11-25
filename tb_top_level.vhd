@@ -54,18 +54,14 @@ begin
 
     -- Clock generation
     TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
-
-    -- EDIT: Check that clk is really your main clock signal
     clk <= TbClock;
 
     stimuli : process
     begin
-        -- EDIT Adapt initialization as needed
         
         SW <= (others => '0');
 
-        -- Reset generation
-        -- EDIT: Check that reset_n is really your reset signal
+      
         reset_n <= '0';
 		
         wait for 100 ns;
@@ -73,7 +69,8 @@ begin
         wait for 100 ns;
 		freeze_button <= '1';
 		wait for 1 ms; 
-        -- EDIT Add stimuli here
+   
+   
 			SW <= "0011111111"; wait for delay; -- displaying FF in Hexadecimal
 		-- Operation Mode 2: ADC_value
 		SW <= "1000000000"; wait for delay; -- display ADC_value in Hexadecimal on SSD
@@ -120,7 +117,6 @@ begin
 
 end tb;
 
--- Configuration block below is required by some simulators. Usually no need to edit.
 
 configuration cfg_tb_top_level of tb_top_level is
     for tb
